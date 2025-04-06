@@ -235,12 +235,17 @@ const PaintingView = () => {
             <div className="bg-white shadow-md rounded-lg p-6 mb-6">
               <h3 className="text-lg font-semibold mb-4">Filter Paintings</h3>
               <div className="grid md:grid-cols-3 gap-6">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Artist</label>
+                {/* Artist Filter */}
+                <div className={selectedGallery || selectedGenre ? 'opacity-50 pointer-events-none' : ''}>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Artist
+                  </label>
                   <select
                     value={selectedArtist}
                     onChange={handleArtistChange}
-                    className="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                    className={`w-full p-2 border rounded-md focus:ring-blue-500 focus:border-blue-500 
+                      ${selectedArtist ? 'border-blue-500 bg-blue-50' : 'border-gray-300'}`}
+                    disabled={selectedGallery || selectedGenre}
                   >
                     <option value="">All Artists</option>
                     {artists.map(artist => (
@@ -249,12 +254,17 @@ const PaintingView = () => {
                   </select>
                 </div>
 
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Gallery</label>
+                {/* Gallery Filter */}
+                <div className={selectedArtist || selectedGenre ? 'opacity-50 pointer-events-none' : ''}>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Gallery
+                  </label>
                   <select
                     value={selectedGallery}
                     onChange={handleGalleryChange}
-                    className="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                    className={`w-full p-2 border rounded-md focus:ring-blue-500 focus:border-blue-500 
+                      ${selectedGallery ? 'border-blue-500 bg-blue-50' : 'border-gray-300'}`}
+                    disabled={selectedArtist || selectedGenre}
                   >
                     <option value="">All Galleries</option>
                     {galleries.map(gallery => (
@@ -263,12 +273,17 @@ const PaintingView = () => {
                   </select>
                 </div>
 
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Genre</label>
+                {/* Genre Filter */}
+                <div className={selectedArtist || selectedGallery ? 'opacity-50 pointer-events-none' : ''}>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Genre
+                  </label>
                   <select
                     value={selectedGenre}
                     onChange={handleGenreChange}
-                    className="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                    className={`w-full p-2 border rounded-md focus:ring-blue-500 focus:border-blue-500 
+                      ${selectedGenre ? 'border-blue-500 bg-blue-50' : 'border-gray-300'}`}
+                    disabled={selectedArtist || selectedGallery}
                   >
                     <option value="">All Genres</option>
                     {genres.map(genre => (
@@ -278,7 +293,12 @@ const PaintingView = () => {
                 </div>
               </div>
 
-              <div className="mt-6 flex justify-end">
+              <div className="mt-6 flex justify-between items-center">
+                <div className="text-sm text-gray-600">
+                  {selectedArtist && <span>Filtering by Artist</span>}
+                  {selectedGallery && <span>Filtering by Gallery</span>}
+                  {selectedGenre && <span>Filtering by Genre</span>}
+                </div>
                 <button
                   onClick={clearFilters}
                   className="px-4 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300 transition-colors"

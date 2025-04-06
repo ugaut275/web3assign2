@@ -1,11 +1,13 @@
-import React, {useRef, useEffect, useState } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import { useLocation, useParams } from "react-router-dom";
 import SingleGalleryCard from "./SingleGalleryCard";
 import { Link } from "react-router-dom";
 import notfavourite from "../assets/heart-empty.svg";
+import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet'
+import 'leaflet/dist/leaflet.css';
 const SingleGallery = () => {
   const location = useLocation();
-  const {galleryId} = useParams();
+  const { galleryId } = useParams();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [sortOption, setSortOption] = useState("title");
   const [isSortDropdownOpen, setIsSortDropdownOpen] = useState(false);
@@ -16,29 +18,29 @@ const SingleGallery = () => {
 
 
 
-      useEffect(() => {
-        const favourites = localStorage.getItem("favourites");
-        if (favourites === null || favourites === '[]') {
-      
-            setIsDisabled(true);
-          
-        } else {
-       
-            setIsDisabled(false);
-          
-        }
-    
-      }, []);
-  useEffect(()=>{
+  useEffect(() => {
+    const favourites = localStorage.getItem("favourites");
+    if (favourites === null || favourites === '[]') {
+
+      setIsDisabled(true);
+
+    } else {
+
+      setIsDisabled(false);
+
+    }
+
+  }, []);
+  useEffect(() => {
     if (favourites.includes(galleryId)) {
       setFav(true);
     }
-    else{
+    else {
       setFav(false);
     }
-  },[])
- 
-  
+  }, [])
+
+
   const addtoFavourites = (galleryId) => {
 
 
@@ -59,19 +61,19 @@ const SingleGallery = () => {
     const favouriteArtists = localStorage.getItem("favourites");
     if (favouriteArtists === null || favouriteArtists === '[]') {
 
-        setIsDisabled(true);
+      setIsDisabled(true);
 
     } else {
 
-        setIsDisabled(false);
+      setIsDisabled(false);
 
     }
 
-}
+  }
 
   if (location.state?.dataCollect) {
     const { dataCollect } = location.state;
-  
+
     return (
       <div className="flex flex-row w-full">
         <div className="sm: bg-gradient-to-br from-white via-stone-100 to-stone-300 min-h-screen mt-10">
@@ -82,7 +84,7 @@ const SingleGallery = () => {
             <Link to="/gallery" className="p-3 rounded-xl hover:bg-stone-200/50 transition-colors group bg-stone-200/50">
               Gallery
             </Link>
-            <Link ref={myRef} to="/favourites" className={`p-3 rounded-xl hover:bg-stone-200/50 transition-colors group ${isDisabled ? 'opacity-50 cursor-not-allowed' : ''}`}  onClick={(e) => isDisabled && e.preventDefault()}> 
+            <Link ref={myRef} to="/favourites" className={`p-3 rounded-xl hover:bg-stone-200/50 transition-colors group ${isDisabled ? 'opacity-50 cursor-not-allowed' : ''}`} onClick={(e) => isDisabled && e.preventDefault()}>
               Favourites
             </Link>
             <Link to="" className="p-3 rounded-xl hover:bg-stone-200/50 transition-colors group">
@@ -110,7 +112,7 @@ const SingleGallery = () => {
                 <Link to="" className="block px-4 py-2 hover:text-blue-500">
                   Gallery
                 </Link>
-                <Link ref={myRef} to={`/favourites" className="block px-4 py-2 hover:text-blue-500 ${isDisabled ? 'opacity-50 cursor-not-allowed' : ''}`} onClick={(e) => isDisabled && e.preventDefault()}> 
+                <Link ref={myRef} to={`/favourites" className="block px-4 py-2 hover:text-blue-500 ${isDisabled ? 'opacity-50 cursor-not-allowed' : ''}`} onClick={(e) => isDisabled && e.preventDefault()}>
                   Favourites
                 </Link>
                 <Link to="" className="block px-4 py-2 hover:text-blue-500">
@@ -162,7 +164,7 @@ const SingleGallery = () => {
                 ) : (
                   <button
                     className="flex hover:cursor-pointer gap-1 items-center bg-gray-100 hover:bg-gray-200 px-4 py-2 rounded-lg"
-                    onClick={() =>addtoFavourites(galleryId)}
+                    onClick={() => addtoFavourites(galleryId)}
                   >
                     <img className="max-w-5 max-h-5" src={notfavourite} alt="Add to Favorites" />
                     <span>Favourite</span>
@@ -173,10 +175,30 @@ const SingleGallery = () => {
               </div>
             </div>
 
-            {/* Map Container */}
-            <div className="w-full h-64 bg-gray-200 rounded-lg mb-6 flex items-center justify-center">
-              <p className="text-gray-500">Map will be displayed here</p>
+            {/* Map Container: couldnt get this to work how i wanted without chatgpt  */}
+            <div className="w-full h-[400px] relative bg-gray-200 rounded-lg mb-6 overflow-hidden">
+              <MapContainer
+                center={[dataCollect.latitude, dataCollect.longitude]}
+                zoom={13}
+                scrollWheelZoom={false}
+                style={{ height: '100%', width: '100%' }}
+                className="z-0 rounded-lg"
+              >
+                <TileLayer
+                  attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                  url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                />
+                <Marker position={[dataCollect.latitude, dataCollect.longitude]}>
+                  <Popup>
+                    <div className="text-sm">
+                      <p className="font-semibold">{dataCollect.galleryName}</p>
+                      <p>{dataCollect.galleryCity}, {dataCollect.galleryCountry}</p>
+                    </div>
+                  </Popup>
+                </Marker>
+              </MapContainer>
             </div>
+
 
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-xl font-semibold">Gallery Collection</h2>
