@@ -105,6 +105,7 @@ const SingleArtistCard = ({ id, sortOption }) => {
                     imageLink={`https://res.cloudinary.com/funwebdev/image/upload/w_150/art/paintings/square/${checkPaintId(selectedPainting.imageFileName)}.jpg`}
                     painting={selectedPainting}
                     isOpen={closeModal}
+                    
                 />
             )}
         </>

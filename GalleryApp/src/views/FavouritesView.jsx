@@ -1,64 +1,296 @@
 import { useEffect, useState } from "react"
 import { Link } from "react-router-dom"
-
+import PaintingModal from "../components/PaintingModal"
 const FavouritesView = () => {
   const [favouriteGalleries, setFavouriteGalleries] = useState([])
+  const [favouriteArtists, setFavouriteArtists] = useState([])
+  const [favouritePaintings, setFavouritePaintings] = useState([])
+  const [favouriteGenres, setFavouriteGenres] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
   const [filterOption, setFilterOption] = useState("galleries")
 
-  useEffect(() => {
-    const fetchFavourites = async () => {
-      try {
-        const favourites = JSON.parse(localStorage.getItem("favourites")) || []
-        if (favourites.length === 0) {
-          setLoading(false)
-          return
-        }
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
-        const getData = await Promise.all(
-          favourites.map(async (galleryId) => {
-            try {
+  const closeModal = () => {
+    setIsModalOpen(false);
+  }
+
+  const openModal=(painting)=>{
+    return(
+      <PaintingModal
+      imageLink={`https://res.cloudinary.com/funwebdev/image/upload/w_150/art/paintings/square/${checkPaintId(painting.imageFileName)}.jpg`}
+      painting={painting}
+      isOpen={closeModal} />
+    )
+  }
+
+  const checkPaintId = (paintingId) => {
+    const idStr = String(paintingId);
+
+    if (idStr.length === 7) {
+      // Return first 6 characters if length is 7
+      return idStr.substring(0, 6);
+    } else if (idStr.length === 4) {
+      return `00${idStr}`;
+    } else if (idStr.length === 5) {
+      return `0${idStr}`;
+    } else {
+      return idStr;
+    }
+  };
+  useEffect(() => {
+    const fetchAllFavourites = async () => {
+      try {
+        // Fetch Favourite Galleries
+        const galleries = JSON.parse(localStorage.getItem("favourites")) || []
+        if (galleries.length > 0) {
+          const galleriesData = await Promise.all(
+            galleries.map(async (galleryId) => {
               const response = await fetch(`http://34.172.61.40:8080/api/paintings/galleries/ref/${galleryId}`)
               const data = await response.json()
               return data[0]
-            } catch (error) {
-              console.error(`Error fetching gallery with ID ${galleryId}:`, error)
-              return null
-            }
-          })
-        )
-        setFavouriteGalleries(...favouriteGalleries, getData)
+            })
+          )
+          setFavouriteGalleries(galleriesData.filter(Boolean))
+        }
+
+        // Fetch Favourite Artists
+        const artists = JSON.parse(localStorage.getItem("favouriteArtists")) || []
+        if (artists.length > 0) {
+          const artistsData = await Promise.all(
+            artists.map(async (artistId) => {
+              const response = await fetch(`http://34.172.61.40:8080/api/artists/ref/${artistId}`)
+              const data = await response.json()
+              return data
+            })
+          )
+          setFavouriteArtists(artistsData.filter(Boolean))
+        }
+
+        // Fetch Favourite Paintings
+        const paintings = JSON.parse(localStorage.getItem("favouritePaintings")) || []
+        if (paintings.length > 0) {
+          const paintingsData = await Promise.all(
+            paintings.map(async (paintingId) => {
+              const response = await fetch(`http://34.172.61.40:8080/api/paintings/ref/${paintingId}`)
+              const data = await response.json()
+              return data
+            })
+          )
+          setFavouritePaintings(paintingsData.filter(Boolean))
+        }
+
+        // Fetch Favourite Genres
+        const genres = JSON.parse(localStorage.getItem("favouriteGenres")) || []
+        if (genres.length > 0) {
+          const genresData = await Promise.all(
+            genres.map(async (genreId) => {
+              const response = await fetch(`http://34.172.61.40:8080/api/genres/ref/${genreId}`)
+              const data = await response.json()
+              return data
+            })
+          )
+          setFavouriteGenres(genresData.filter(Boolean))
+        }
+
       } catch (error) {
-        console.error("Error fetching favourite galleries:", error)
-        setError("Failed to load favorite galleries")
+        console.error("Error fetching favourites:", error)
+        setError("Failed to load favorites")
       } finally {
         setLoading(false)
       }
     }
 
-    fetchFavourites()
+    fetchAllFavourites()
   }, [])
-  // favouriteGalleries.forEach(gallery => console.log(gallery.galleries.galleryId));
 
-  const removeFromFavourites = (galleryId) => {
+  const removeFromFavourites = (id, type) => {
     try {
+      switch (type) {
+        case 'galleries': {
+          const updatedGalleries = favouriteGalleries
+            .map(gallery => gallery.galleries.galleryId)
+            .filter(galleryId => galleryId !== id)
+          localStorage.setItem("favourites", JSON.stringify(updatedGalleries))
+          setFavouriteGalleries(items => items.filter(gallery => gallery.galleries.galleryId !== id))
+          break
+        }
 
-      const updatedFavourites = favouriteGalleries
-        .map(gallery => gallery.galleries.galleryId)
-        .filter(id => id !== galleryId);
-      localStorage.setItem("favourites", JSON.stringify(updatedFavourites));
-
-      setFavouriteGalleries(items =>
-        items.filter(gallery => gallery.galleries.galleryId !== galleryId)
-      );
+        case 'artists': {
+          const updatedArtists = favouriteArtists
+            .map(artist => artist.artistId)
+            .filter(artistId => artistId !== id)
+          localStorage.setItem("favouriteArtists", JSON.stringify(updatedArtists))
+          setFavouriteArtists(items => items.filter(artist => artist.artistId !== id))
+          break
+        }
+        case 'paintings': {
+          const updatedPaintings = favouritePaintings
+            .map(painting => painting.paintingId)
+            .filter(paintingId => paintingId !== id)
+          localStorage.setItem("favouritePaintings", JSON.stringify(updatedPaintings))
+          setFavouritePaintings(items => items.filter(painting => painting.paintingId !== id))
+          break
+        }
+        case 'genres': {
+          const updatedGenres = favouriteGenres
+            .map(genre => genre.genreId)
+            .filter(genreId => genreId !== id)
+          localStorage.setItem("favouriteGenres", JSON.stringify(updatedGenres))
+          setFavouriteGenres(items => items.filter(genre => genre.genreId !== id))
+          break
+        }
+      }
     } catch (error) {
-      console.error("Error removing from favourites:", error);
+      console.error("Error removing from favourites:", error)
     }
   }
 
-  if (loading) {     
+  const renderContent = () => {
+    switch (filterOption) {
+      case 'galleries':
+        return (
+          <ul className="divide-y divide-double divide-yellow-400">
+            {favouriteGalleries.map(gallery => (
+              <li key={`gallery-${gallery.galleries?.galleryId}`} className="py-4 flex justify-between items-center">
+                <div className="flex-1">
+                  <Link
+                    to={{ pathname: `/singlegallery/${gallery.galleries.galleryId}` }}
+                    state={{ dataCollect: gallery }}
+                    className="block">
+                    <h2 className="text-lg font-medium text-gray-800 hover:text-gray-600 transition duration-300">
+                      {gallery.galleries?.galleryName || "Unknown Gallery"}
+                    </h2>
+                  </Link>
+                  <p className="text-sm text-gray-600 mt-1">
+                    {gallery.galleries?.galleryCity}, {gallery.galleries?.galleryCountry}
+                  </p>
+                </div>
+                <div className="flex items-center gap-3">
+                  <Link
+                    to={{ pathname: `/singlegallery/${gallery.galleries?.galleryId}` }}
+                    state={{ dataCollect: gallery }}
+                    className="text-sm bg-gray-100 hover:bg-gray-200 px-3 py-1 rounded transition-colors">
+                    View
+                  </Link>
+                  <button
+                    onClick={() => removeFromFavourites(gallery.galleries?.galleryId, 'galleries')}
+                    className="hover:text-red-500 hover:cursor-pointer transition-colors duration-300 bg-gray-100 hover:bg-gray-300 px-3 py-1 rounded">
+                    Remove
+                  </button>
+                </div>
+              </li>
+            ))}
+          </ul>
+        )
+
+      case 'artists':
+        return (
+          <ul className="divide-y divide-double divide-yellow-400">
+            {favouriteArtists.map(artist => (
+              <li key={`artist-${artist.artistId}`} className="py-4 flex justify-between items-center">
+                <div className="flex-1">
+                  <Link
+                    to={{ pathname: `/ArtistDetails/${artist.artistId}` }}
+                    state={{ data: artist }}
+                    className="block">
+                    <h2 className="text-lg font-medium text-gray-800 hover:text-gray-600 transition duration-300">
+                      {artist.firstName} {artist.lastName}
+                    </h2>
+                  </Link>
+                  <p className="text-sm text-gray-600 mt-1">
+                    {artist.nationality}
+                  </p>
+                </div>
+                <div className="flex items-center gap-3">
+                  <Link
+                    to={{ pathname: `/ArtistDetails/${artist.artistId}` }}
+                    state={{ data: artist }}
+                    className="text-sm bg-gray-100 hover:bg-gray-200 px-3 py-1 rounded transition-colors">
+                    View
+                  </Link>
+                  <button
+                    onClick={() => removeFromFavourites(artist.artistId, 'artists')}
+                    className="hover:text-red-500 hover:cursor-pointer transition-colors duration-300 bg-gray-100 hover:bg-gray-300 px-3 py-1 rounded">
+                    Remove
+                  </button>
+                </div>
+              </li>
+            ))}
+          </ul>
+        )
+
+      case 'paintings':
+        return (
+          <ul className="divide-y divide-double divide-yellow-400">
+            {favouritePaintings.map(painting => (
+              <li key={`painting-${painting.paintingId}`} className="py-4 flex justify-between items-center">
+                <div className="flex-1">
+                  <h2 className="text-lg font-medium text-gray-800">
+                    {painting.title}
+                  </h2>
+                  <p className="text-sm text-gray-600 mt-1">
+                    {painting.yearOfWork}
+                  </p>
+                </div>
+                <div className="flex items-center gap-3">
+                <button
+                    onClick={() => openModal(painting)}
+                    className="hover:text-red-500 hover:cursor-pointer transition-colors duration-300 bg-gray-100 hover:bg-gray-300 px-3 py-1 rounded">
+                    View
+                  </button>
+                  <button
+                    onClick={() => removeFromFavourites(painting.paintingId, 'paintings')}
+                    className="hover:text-red-500 hover:cursor-pointer transition-colors duration-300 bg-gray-100 hover:bg-gray-300 px-3 py-1 rounded">
+                    Remove
+                  </button>
+                </div>
+              </li>
+            ))}
+          </ul>
+        )
+
+      case 'genres':
+        return (
+          <ul className="divide-y divide-double divide-yellow-400">
+            {favouriteGenres.map(genre => (
+              <li key={`genre-${genre.genreId}`} className="py-4 flex justify-between items-center">
+                <div className="flex-1">
+                  <Link
+                    to={{ pathname: `/GenreDetails/${genre.genreId}` }}
+                    state={{ data: genre }}
+                    className="block">
+                    <h2 className="text-lg font-medium text-gray-800 hover:text-gray-600 transition duration-300">
+                      {genre.genreName}
+                    </h2>
+                  </Link>
+                  <p className="text-sm text-gray-600 mt-1">
+                    {genre.description}
+                  </p>
+                </div>
+                <div className="flex items-center gap-3">
+                  <Link
+                    to={{ pathname: `/GenreDetails/${genre.genreId}` }}
+                    state={{ data: genre }}
+                    className="text-sm bg-gray-100 hover:bg-gray-200 px-3 py-1 rounded transition-colors">
+                    View
+                  </Link>
+                  <button
+                    onClick={() => removeFromFavourites(genre.genreId, 'genres')}
+                    className="hover:text-red-500 hover:cursor-pointer transition-colors duration-300 bg-gray-100 hover:bg-gray-300 px-3 py-1 rounded">
+                    Remove
+                  </button>
+                </div>
+              </li>
+            ))}
+          </ul>
+        )
+    }
+  }
+
+  if (loading) {
     return (
       <div className="flex flex-col items-center justify-center min-h-64 mt-16">
         <div className="text-center mb-4">
@@ -68,7 +300,6 @@ const FavouritesView = () => {
       </div>
     )
   }
-
 
   return (
     <div className="flex flex-row w-full">
@@ -83,15 +314,13 @@ const FavouritesView = () => {
           <Link to="" className="p-3 rounded-xl hover:bg-stone-200/50 transition-colors group bg-stone-200/50">
             Favourites
           </Link>
-          <Link to="" className="p-3 rounded-xl hover:bg-stone-200/50 transition-colors group">
+          <Link to="/paintings" className="p-3 rounded-xl hover:bg-stone-200/50 transition-colors group">
             Paintings
           </Link>
-          <Link to="" className="p-3 rounded-xl hover:bg-stone-200/50 transition-colors group">
+          <Link to="/genre" className="p-3 rounded-xl hover:bg-stone-200/50 transition-colors group">
             Genres
           </Link>
-          <Link to="" className="p-3 rounded-xl hover:bg-stone-200/50 transition-colors group">
-            About
-          </Link>
+
         </div>
         <div className="sm:hidden relative">
           <button
@@ -110,15 +339,13 @@ const FavouritesView = () => {
               <Link to="" className="block px-4 py-2 hover:text-blue-500">
                 Favourites
               </Link>
-              <Link to="" className="block px-4 py-2 hover:text-blue-500">
+              <Link to="/paintings" className="block px-4 py-2 hover:text-blue-500">
                 Paintings
               </Link>
-              <Link to="" className="block px-4 py-2 hover:text-blue-500">
+              <Link to="/genres" className="block px-4 py-2 hover:text-blue-500">
                 Genres
               </Link>
-              <Link to="" className="block px-4 py-2 hover:text-blue-500">
-                About
-              </Link>
+
             </div>
           )}
         </div>
@@ -127,13 +354,15 @@ const FavouritesView = () => {
       <div className="flex-grow flex flex-col p-8 mt-5 mr-10">
         <div className="container mx-auto px-4 py-8">
           <div className="flex justify-between items-center mb-6">
-            <h1 className="text-2xl font-bold text-gray-800">Favourite Galleries</h1>
+            <h1 className="text-2xl font-bold text-gray-800">Favourites</h1>
             <p className="text-gray-500">
-              {favouriteGalleries.length} {favouriteGalleries.length === 1 ? "gallery" : "galleries"}
+              {filterOption === 'galleries' && `${favouriteGalleries.length} ${favouriteGalleries.length === 1 ? "gallery" : "galleries"}`}
+              {filterOption === 'artists' && `${favouriteArtists.length} ${favouriteArtists.length === 1 ? "artist" : "artists"}`}
+              {filterOption === 'paintings' && `${favouritePaintings.length} ${favouritePaintings.length === 1 ? "painting" : "paintings"}`}
+              {filterOption === 'genres' && `${favouriteGenres.length} ${favouriteGenres.length === 1 ? "genre" : "genres"}`}
             </p>
           </div>
 
-          {/* Filter Bar */}
           <div className="flex justify-center mb-8">
             <div className="bg-gray-100 rounded-lg inline-flex p-1">
               <button
@@ -151,63 +380,15 @@ const FavouritesView = () => {
                 onClick={() => setFilterOption('paintings')}>
                 Paintings
               </button>
+              <button
+                className={`px-6 py-2 rounded-md transition ${filterOption === 'genres' ? 'bg-white shadow-sm font-medium' : 'text-gray-600 hover:bg-gray-200'}`}
+                onClick={() => setFilterOption('genres')}>
+                Genres
+              </button>
             </div>
           </div>
 
-
-          <ul className="divide-y divide-double divide-yellow-400">
-            {favouriteGalleries.map(gallery =>
-              <li key={`gallery-${gallery.galleries?.galleryId}-${gallery.galleries?.galleryName}`} className="py-4 flex justify-between items-center">
-                <div className="flex-1">
-                  <Link
-                    to={{ pathname: `/singlegallery/${gallery.galleries.galleryId}` }}
-                    state={{ dataCollect: gallery }}
-                    className="block">
-                    <h2 className="text-lg font-medium text-gray-800 hover:text-gray-600 transition duration-300">
-                      {gallery.galleries?.galleryName || "Unknown Gallery"}
-                    </h2>
-                  </Link>
-                  {gallery.galleries?.galleryCity && (
-                    <p className="text-sm text-gray-600 mt-1">
-                      {gallery.galleries.galleryCity}, {gallery.galleries.galleryCountry}
-                    </p>
-                  )}
-
-                  {gallery.galleries?.galleryWebSite && (
-                    <a
-                      href={
-                        gallery.galleries.galleryWebSite.startsWith("http")
-                          ? gallery.galleries.galleryWebSite
-                          : `https://${gallery.galleries.galleryWebSite}`
-                      }
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-sm text-gray-600 hover:underline mt-1 inline-block">
-                      Website
-                    </a>
-                  )}
-                </div>
-
-                <div className="flex items-center gap-3">
-                  <Link
-                    to={{ pathname: `/singlegallery/${gallery.galleries?.galleryId}` }}
-                    state={{ dataCollect: gallery }}
-                    className="text-sm bg-gray-100 hover:bg-gray-200 px-3 py-1 rounded transition-colors">
-                    View
-                  </Link>
-
-                  <button
-                    onClick={() => removeFromFavourites(gallery.galleries?.galleryId)}
-                    className="hover:text-red-500 hover:cursor-pointer transition-colors duration-300 bg-gray-100 hover:bg-gray-300 px-3 py-1 rounded"
-                    title="Remove from favourites">
-                    Remove
-                  </button>
-                </div>
-              </li>
-            )
-            }
-          </ul>
-
+          {renderContent()}
         </div>
       </div>
     </div>

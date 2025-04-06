@@ -147,14 +147,14 @@ const SingleArtists = () => {
                                 <p>
                                     <span className="font-semibold">︎🚻</span> {data.gender === "M" ? "Male" : "Female" }
                                 </p>
-                                <a
-                                    href={data.artistLink}
+                                <Link
+                                    to={data.artistLink}
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     className="text-blue-600 hover:underline"
                                 >
                                     🌐 Wikipedia
-                                </a>
+                                </Link>
                                 <p className="">
                                     <span className="font-semibold">ℹ️</span> {data.details}
                                 </p>

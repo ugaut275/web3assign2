@@ -95,7 +95,7 @@ const GalleryView = () => {
               Artists
             </Link>
             <Link
-              to="/singlegallery"
+              to="/paintings"
               className={`block px-4 py-2 rounded-md font-medium transition-colors duration-200 ${isDarkMode ? 'text-white  hover:bg-gray-700' : 'hover:bg-gray-100'}`}>
               Paintings
             </Link>
