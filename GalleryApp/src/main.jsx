@@ -7,12 +7,19 @@ import GalleryView from './views/GalleryView.jsx';
 import SingleGallery from './components/SingleGallery.jsx';
 import NotFound from './views/NotFound.jsx';
 import ArtistView from './views/ArtistView.jsx';
-
+import FavouritesView from './views/FavouritesView.jsx';
+import SingleArtists from './components/SingleArtists.jsx';
+import GenreView from './views/GenreView.jsx';
+import SingleGenre from './components/SingleGenre.jsx';
 const router = createBrowserRouter([
   {path: '/', element: <App />},
   {path: '/gallery', element: <GalleryView />},
   {path: '/singlegallery/:galleryId', element: <SingleGallery />},
   {path: '/ArtistView', element: <ArtistView/>},
+  {path: '/favourites', element: <FavouritesView/>},
+  {path: '/GenreDetails/:genreId', element: <SingleGenre />}, 
+  {path: '/genres', element: <GenreView/>},
+  {path: '/ArtistDetails/:artistId', element: <SingleArtists />}, 
   {path: '*', element: <h1><NotFound/></h1>},
 ]);
 createRoot(document.getElementById('root')).render(

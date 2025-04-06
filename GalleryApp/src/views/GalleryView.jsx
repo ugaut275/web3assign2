@@ -1,109 +1,176 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import GalleryList from "../components/GalleryList";
 import { Link } from 'react-router-dom';
-//https://tailwindcss.com/docs/installation/using-vite ------> This is basically what i used for my styling, found it quite comprehensive 
-// https://stackoverflow.com/questions/47925751/how-to-fill-the-height-of-the-viewport-with-tailwind-css
+import image from "../assets/chatgpt_bg.png";
 
-const GalleryView = ({galleries}, addtoFavorites) => {
-    const [isDarkMode, setIsDarkMode] = useState(false);
-    const [isDropdownOpen, setIsDropdownOpen] = useState(false); 
-    const toggleDarkMode = () => {
-        setIsDarkMode(!isDarkMode);
+
+// Used Chat GPT to help with making the LINk component conditionally enabled or disabled... you should find it in the attached chat history
+
+
+const GalleryView = () => {
+  const [isDarkMode, setIsDarkMode] = useState(false);
+  const [isDisabled, setIsDisabled] = useState(false);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [galleries, setGalleryData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const myRef = useRef(null);
+  const dropdownRef = useRef(null);
+  const DarkMode = () => {
+    setIsDarkMode(!isDarkMode);
+  };
+
+  const DropdownCheck = () => {
+    setIsDropdownOpen(!isDropdownOpen);
+  };
+
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch('http://35.193.45.17:8080/api/gallery');
+        const data = await response.json();
+        setGalleryData(data);
+      } catch (error) {
+        console.log(error);
+      }finally{
+        setLoading(false);
+      }
     };
 
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    const favourites = localStorage.getItem("favourites");
+    if (favourites === null || favourites === '[]') {
+  
+        setIsDisabled(true);
+      
+    } else {
+   
+        setIsDisabled(false);
+      
+    }
+
+  }, []);
+
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsDropdownOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  if (loading) {
     return (
-        <div className="flex flex-col gap-2 bg-gradient-to-b from-stone-100 via-gray-400  to-stone-500">
-            <nav className="bg-stone-100 shadow-md p-4">
-                <div className="container mx-auto flex flex-col sm:flex-row justify-between items-center">
-                    <h1 className="text-2xl font-bold my-4 sm:my-0">GalleryView App</h1>
-
-                    <div className="flex flex-row space-x-4 items-center">
-                        <Link
-                            to={{ pathname: '/singlegallery' }}
-                            className="font-medium text-lg hover:text-indigo-600 transition duration-300 ease-in-out"
-                        >
-                            Gallery
-                        </Link>
-                        <Link
-                            to={{ pathname: '/singlegallery' }}
-                            className="font-medium text-lg hover:text-indigo-600 transition duration-300 ease-in-out"
-                        >
-                            Artists
-                        </Link>
-                        <Link
-                            to={{ pathname: '/singlegallery' }}
-                            className="font-medium text-lg hover:text-indigo-600 transition duration-300 ease-in-out"
-                        >
-                            Paintings
-                        </Link>
-                        <Link
-                            to={{ pathname: '/singlegallery' }}
-                            className="font-medium text-lg hover:text-indigo-600 transition duration-300 ease-in-out"
-                        >
-                            Genre
-                        </Link>
-                        <Link
-                            to={{ pathname: '/singlegallery' }}
-                            className="font-medium text-lg hover:text-indigo-600 transition duration-300 ease-in-out"
-                        >
-                            About
-                        </Link>
-
-                        <div className="relative">
-                            <button
-                                onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                                className="font-medium text-lg hover:text-indigo-600 transition duration-300 ease-in-out"
-                            >
-                                More
-                            </button>
-                            {isDropdownOpen && (
-                                <div
-                                    className="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5"
-                                >
-                                    <div className="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
-                                        <a
-                                            href="#"
-                                            className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                                            role="menuitem"
-                                            onClick={() => setIsDropdownOpen(false)}
-                                        >
-                                            Favourites
-                                        </a>
-                                        <a
-                                            href="#"
-                                            className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                                            role="menuitem"
-                                            onClick={() => setIsDropdownOpen(false)}
-                                        >
-                                            Collections
-                                        </a>
-                                        <a
-                                            href="#"
-                                            className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                                            role="menuitem"
-                                            onClick={() => setIsDropdownOpen(false)}
-                                        >
-                                            Profile
-                                        </a>
-                                    </div>
-                                </div>
-                            )}
-                        </div>
-                    </div>
-                </div>
-            </nav>
-                    
-            <div className="py-35 m-auto sm:ml-30">
-                <button 
-                    onClick={toggleDarkMode}
-                    className="absolute top-4 right-4 auto rounded-full bg-gray-200 flex items-center justify-center shadow-md focus:outline-none"
-                >
-                    {isDarkMode ? '☀️' : '🌙'}
-                </button>
-                <GalleryList galleries={galleries} addtoFavorites={addtoFavorites}/>
-            </div>
+      <div className="flex flex-col items-center justify-center min-h-screen mt-16">
+        <div className="text-center mb-4">
+          <div className="inline-block h-8 w-8 border-4 border-red-600 border-t-transparent rounded-full animate-spin"></div>
         </div>
+        <p className="text-lg text-gray-700">Loading...</p>
+      </div>
     );
-}
+  }
+
+  return (
+    <div style={{ backgroundImage: `url(${image})` }} className="flex bg-fixed bg-cover  bg-no-repeat bg-center min-h-screen">
+      {/*  <div className={`flex bg-center  bg-gradient-to-r from-gray-700 via-stone-600 to-gray-500  min-h-screen`} > */}
+      <div className={` ${isDarkMode ? 'bg-stone-800' : 'bg-white'} hidden sm:flex  shadow-lg w-64 sm:min-h-screen`}>
+        <div className="p-6 h-full flex flex-col">
+          <div className="flex items-center mb-8">
+            <h1 className={`text-xl font-bold ${isDarkMode ? 'text-white' : 'text-black'}`} >GalleryView</h1>
+          </div>
+
+          <div className="flex-1 space-y-2">
+
+
+            <Link
+              to="/ArtistView"
+              className={`block px-4 py-2 rounded-md font-medium transition-colors duration-200 ${isDarkMode ? 'text-white hover:bg-gray-700' : 'hover:bg-gray-100'}`}>
+              Artists
+            </Link>
+            <Link
+              to="/singlegallery"
+              className={`block px-4 py-2 rounded-md font-medium transition-colors duration-200 ${isDarkMode ? 'text-white  hover:bg-gray-700' : 'hover:bg-gray-100'}`}>
+              Paintings
+            </Link>
+            <Link
+              to="/genres"
+              className={`block px-4 py-2 rounded-md font-medium transition-colors duration-200 ${isDarkMode ? 'text-white  hover:bg-gray-700' : 'hover:bg-gray-100'}`}>
+              Genre
+            </Link>
+            <Link
+              to="/singlegallery" className={`block px-4 py-2 rounded-md font-medium transition-colors duration-200 ${isDarkMode ? 'text-white  hover:bg-gray-700' : 'hover:bg-gray-100'}`}>
+              About
+            </Link>
+            <Link
+              ref={myRef} to={"/favourites"} className={`block px-4 py-2 rounded-md font-medium transition-colors duration-200 ${isDarkMode ? 'text-white  hover:bg-gray-700' : 'hover:bg-gray-100'} ${isDisabled ? 'opacity-50 cursor-not-allowed' : ''}`}
+              onClick={(e) => isDisabled && e.preventDefault()}>  
+              Favourites
+            </Link>
+            <div className="pt-4 border-t mt-4">
+              <button
+                onClick={DarkMode}
+                className={`flex items-center justify-between w-full px-4 py-2 rounded-md ${isDarkMode ? 'text-white  hover:bg-gray-700' : 'hover:bg-gray-100'}`}>
+                <span>{isDarkMode ? 'Light Mode' : 'Dark Mode'}</span>
+                <span>{isDarkMode ? '☀️' : '🌙'}</span>
+              </button>
+
+            </div>
+          </div>
+
+
+        </div>
+
+      </div>
+      <div className='sm:hidden absolute mt-5 left-3/7 text-xl font-bold '>
+        <h1> GalleryView App</h1>
+      </div>
+      <div className="sm:hidden  w-30 absolute mt-5 ml-5 ">
+        <button
+          onClick={DropdownCheck}
+          className="p-3 rounded-xl bg-stone-200 hover:bg-stone-300 transition-colors w-full text-left flex items-center justify-between"
+        >
+          <span>≡</span>
+        </button>
+        {isDropdownOpen && (
+          <div
+            ref={dropdownRef}
+            className="absolute left-0 right-0 bg-white shadow-lg rounded-lg mt-2 w-full z-10  "
+          >
+            <Link to="/ArtistView" className="block px-4 py-2 hover:text-blue-500">
+              Artists
+            </Link>
+            <Link to="/gallery" className="block px-4 py-2 hover:text-blue-500">
+              Gallery
+            </Link>
+            <Link to="/favourites" className="block px-4 py-2 hover:text-blue-500">
+              Favourites
+            </Link>
+            <Link to="/paintings" className="block px-4 py-2 hover:text-blue-500">
+              Paintings
+            </Link>
+            <Link to="/genres" className="block px-4 py-2 hover:text-blue-500">
+              Genres
+            </Link>
+            <Link to="/about" className="block px-4 py-2 hover:text-blue-500">
+              About
+            </Link>
+          </div>
+        )}
+      </div>
+      <div className="flex flex-col">
+        <div className="flex my-35 p-6">
+          <GalleryList galleries={galleries} isDarkMode={isDarkMode} />
+        </div>
+      </div>
+    </div>
+  );
+};
 
 export default GalleryView;

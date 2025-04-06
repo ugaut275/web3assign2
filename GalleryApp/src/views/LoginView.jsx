@@ -1,5 +1,9 @@
+import { Link } from 'react-router-dom';
 import backgroundImage from '../assets/eric-park-QbX8A8eHfzw-unsplash.jpg';
 
+// https://flowbite.com/docs/forms/input-field/  for the input field design
+// https://flowbite.com/docs/buttons/  for the button design
+// https://flowbite.com/docs/cards/  for the card design
 
 const LoginView = () => {
   return (
@@ -12,10 +16,11 @@ const LoginView = () => {
           type="password" 
           placeholder="Password" 
           className="px-5 py-4 border-2 border-gray-100 rounded-xl text-base font-normal w-full box-border transition-all ease-in-out duration-300 bg-gray-50 text-gray-800 focus:outline-none focus:border-gray-500 focus:shadow-[0_0_0_4px_rgba(85,85,85,0.1)] focus:bg-white"/>
-        <button 
+        <Link 
+          to='/gallery'
           className="py-4 bg-gray-800 text-white border-none rounded-xl text-base font-medium cursor-pointer transition-all ease-in-out duration-300 w-full mt-2 tracking-wider shadow-[0_4px_12px_rgba(0,0,0,0.15)] hover:bg-gray-700 hover:-translate-y-0.5 hover:shadow-[0_6px_15px_rgba(0,0,0,0.2)] active:translate-y-0 active:shadow-[0_4px_8px_rgba(0,0,0,0.1)]">
           Login
-        </button>
+        </Link>
       </div>
       <p className="text-xs text-gray-500 mt-6 font-light">
         Photo by Eric Park on Unsplash

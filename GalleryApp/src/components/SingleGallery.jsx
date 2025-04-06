@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, {useRef, useEffect, useState } from "react";
 import { useLocation, useParams } from "react-router-dom";
 import SingleGalleryCard from "./SingleGalleryCard";
 import { Link } from "react-router-dom";
@@ -11,7 +11,24 @@ const SingleGallery = () => {
   const [isSortDropdownOpen, setIsSortDropdownOpen] = useState(false);
   const favourites = JSON.parse(localStorage.getItem("favourites") || "[]");
   const [isFavourite, setFav] = useState();
+  const myRef = useRef(null);
+  const [isDisabled, setIsDisabled] = useState(false);
 
+
+
+      useEffect(() => {
+        const favourites = localStorage.getItem("favourites");
+        if (favourites === null || favourites === '[]') {
+      
+            setIsDisabled(true);
+          
+        } else {
+       
+            setIsDisabled(false);
+          
+        }
+    
+      }, []);
   useEffect(()=>{
     if (favourites.includes(galleryId)) {
       setFav(true);
@@ -22,10 +39,6 @@ const SingleGallery = () => {
   },[])
  
   
-
-
-
-
   const addtoFavourites = (galleryId) => {
 
 
@@ -33,34 +46,49 @@ const SingleGallery = () => {
       const updatedFavourites = favourites.filter(id => id !== galleryId);
       localStorage.setItem("favourites", JSON.stringify(updatedFavourites));
       setFav(false);
+      changeButtonState();
     } else {
       const updatedFavourites = [...favourites, galleryId];
       localStorage.setItem("favourites", JSON.stringify(updatedFavourites));
       setFav(true);
+      changeButtonState();
     }
   }
 
+  const changeButtonState = () => {
+    const favouriteArtists = localStorage.getItem("favourites");
+    if (favouriteArtists === null || favouriteArtists === '[]') {
+
+        setIsDisabled(true);
+
+    } else {
+
+        setIsDisabled(false);
+
+    }
+
+}
 
   if (location.state?.dataCollect) {
     const { dataCollect } = location.state;
   
     return (
       <div className="flex flex-row w-full">
-        <div className="sm:bg-gradient-to-br from-white via-stone-100 to-stone-300 min-h-screen mt-10">
+        <div className="sm: bg-gradient-to-br from-white via-stone-100 to-stone-300 min-h-screen mt-10">
           <div className="hidden sm:flex w-20 bg-white/50 backdrop-blur-sm w-full flex-col items-center py-8 space-y-6">
             <Link to="/ArtistView" className="p-3 rounded-xl hover:bg-stone-200/50 transition-colors group">
               Artists
             </Link>
-            <Link to="" className="p-3 rounded-xl hover:bg-stone-200/50 transition-colors group bg-stone-200/50">
+            <Link to="/gallery" className="p-3 rounded-xl hover:bg-stone-200/50 transition-colors group bg-stone-200/50">
               Gallery
             </Link>
-            <Link to="" className="p-3 rounded-xl hover:bg-stone-200/50 transition-colors group">
+            <Link ref={myRef} to="/favourites" className={`p-3 rounded-xl hover:bg-stone-200/50 transition-colors group ${isDisabled ? 'opacity-50 cursor-not-allowed' : ''}`}  onClick={(e) => isDisabled && e.preventDefault()}> 
               Favourites
             </Link>
             <Link to="" className="p-3 rounded-xl hover:bg-stone-200/50 transition-colors group">
               Paintings
             </Link>
-            <Link to="" className="p-3 rounded-xl hover:bg-stone-200/50 transition-colors group">
+            <Link to="/genres" className="p-3 rounded-xl hover:bg-stone-200/50 transition-colors group">
               Genres
             </Link>
             <Link to="" className="p-3 rounded-xl hover:bg-stone-200/50 transition-colors group">
@@ -76,19 +104,19 @@ const SingleGallery = () => {
             </button>
             {isDropdownOpen && (
               <div className="absolute rounded-lg mt-2 w-full z-10">
-                <Link href="/ArtistView" className="block px-4 py-2 hover:text-blue-500">
+                <Link to="/ArtistView" className="block px-4 py-2 hover:text-blue-500">
                   Artists
                 </Link>
                 <Link to="" className="block px-4 py-2 hover:text-blue-500">
                   Gallery
                 </Link>
-                <Link to="" className="block px-4 py-2 hover:text-blue-500">
+                <Link ref={myRef} to={`/favourites" className="block px-4 py-2 hover:text-blue-500 ${isDisabled ? 'opacity-50 cursor-not-allowed' : ''}`} onClick={(e) => isDisabled && e.preventDefault()}> 
                   Favourites
                 </Link>
                 <Link to="" className="block px-4 py-2 hover:text-blue-500">
                   Paintings
                 </Link>
-                <Link to="" className="block px-4 py-2 hover:text-blue-500">
+                <Link to="/genres" className="block px-4 py-2 hover:text-blue-500">
                   Genres
                 </Link>
                 <Link to="" className="block px-4 py-2 hover:text-blue-500">
@@ -152,7 +180,7 @@ const SingleGallery = () => {
 
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-xl font-semibold">Gallery Collection</h2>
-              <div className="relative">  {/* https://tailwindcss.com/plus/ui-blocks/application-ui/elements/dropdowns*/}
+              <div className="relative">  {/* https://tailwindcss.com/plus/ui-blocks/application-ui/elements/dropdowns */}
                 <button
                   onClick={() => setIsSortDropdownOpen(!isSortDropdownOpen)}
                   className="flex items-center bg-gray-100 hover:bg-gray-200 px-4 py-2 rounded-lg"
