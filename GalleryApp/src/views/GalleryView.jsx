@@ -23,7 +23,7 @@ const GalleryView = () => {
     setIsDropdownOpen(!isDropdownOpen);
   };
 
-
+  // Fetching all galleries and setting it to a state variable
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -40,7 +40,7 @@ const GalleryView = () => {
     fetchData();
   }, []);
 
-  useEffect(() => {
+  useEffect(() => {   // checking to see if the favourites button should be enabled or disabled based on if we have anything in the localstorage for galleries
     const favourites = localStorage.getItem("favourites");
     if (favourites === null || favourites === '[]') {
   
@@ -54,7 +54,7 @@ const GalleryView = () => {
 
   }, []);
 
-  useEffect(() => {
+  useEffect(() => {   // handles the event when button clicked outside the dropdown .... AI generated 
     function handleClickOutside(event) {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
         setIsDropdownOpen(false);
@@ -66,7 +66,7 @@ const GalleryView = () => {
     };
   }, []);
 
-  if (loading) {
+  if (loading) {    // https://tw-elements.com/docs/standard/components/spinners/   ---> Browsed through here to get an understand. simple enough 
     return (
       <div className="flex flex-col items-center justify-center min-h-screen mt-16">
         <div className="text-center mb-4">
@@ -78,17 +78,17 @@ const GalleryView = () => {
   }
 
   return (
+    // sets the background to an image that i asked chatgpt to generate. Had some darkmode features before i changed to picture but it still works for the side bar
     <div style={{ backgroundImage: `url(${image})` }} className="flex bg-fixed bg-cover  bg-no-repeat bg-center min-h-screen">
-      {/*  <div className={`flex bg-center  bg-gradient-to-r from-gray-700 via-stone-600 to-gray-500  min-h-screen`} > */}
       <div className={` ${isDarkMode ? 'bg-stone-800' : 'bg-white'} hidden sm:flex  shadow-lg w-64 sm:min-h-screen`}>
-        <div className="p-6 h-full flex flex-col">
+        <div className="p-6 h-full flex flex-col">     {/* Arranging sidebar components in a column format and making it so that it spans the lenght of the page. */}
           <div className="flex items-center mb-8">
             <h1 className={`text-xl font-bold ${isDarkMode ? 'text-white' : 'text-black'}`} >GalleryView</h1>
           </div>
 
           <div className="flex-1 space-y-2">
 
-
+             {/* TLink components to various other pages*/}
             <Link
               to="/ArtistView"
               className={`block px-4 py-2 rounded-md font-medium transition-colors duration-200 ${isDarkMode ? 'text-white hover:bg-gray-700' : 'hover:bg-gray-100'}`}>
@@ -105,7 +105,7 @@ const GalleryView = () => {
               Genre
             </Link>
             <Link
-              to="/singlegallery" className={`block px-4 py-2 rounded-md font-medium transition-colors duration-200 ${isDarkMode ? 'text-white  hover:bg-gray-700' : 'hover:bg-gray-100'}`}>
+              to="/about" className={`block px-4 py-2 rounded-md font-medium transition-colors duration-200 ${isDarkMode ? 'text-white  hover:bg-gray-700' : 'hover:bg-gray-100'}`}>
               About
             </Link>
             <Link
@@ -132,17 +132,11 @@ const GalleryView = () => {
         <h1> GalleryView App</h1>
       </div>
       <div className="sm:hidden  w-30 absolute mt-5 ml-5 ">
-        <button
-          onClick={DropdownCheck}
-          className="p-3 rounded-xl bg-stone-200 hover:bg-stone-300 transition-colors w-full text-left flex items-center justify-between"
-        >
+        <button onClick={DropdownCheck} className="p-3 rounded-xl bg-stone-200 hover:bg-stone-300 transition-colors w-full text-left flex items-center justify-between">
           <span>≡</span>
         </button>
         {isDropdownOpen && (
-          <div
-            ref={dropdownRef}
-            className="absolute left-0 right-0 bg-white shadow-lg rounded-lg mt-2 w-full z-10  "
-          >
+          <div ref={dropdownRef} className="absolute left-0 right-0 bg-white shadow-lg rounded-lg mt-2 w-full z-10  ">
             <Link to="/ArtistView" className="block px-4 py-2 hover:text-blue-500">
               Artists
             </Link>

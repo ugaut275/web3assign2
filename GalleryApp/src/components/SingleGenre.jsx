@@ -14,6 +14,10 @@ const SingleGenre = () => {
   const myRef = useRef(null);
   const [isDisabled, setIsDisabled] = useState(false);
 
+
+  // identical to single gallery
+
+
   useEffect(() => {
     const favourites = localStorage.getItem("favouriteGenres");
     if (favourites === null || favourites === "[]") {
@@ -74,13 +78,13 @@ const SingleGenre = () => {
             <Link ref={myRef} to="/favourites" className={`p-3 rounded-xl hover:bg-stone-200/50 transition-colors group ${isDisabled ? 'opacity-50 cursor-not-allowed' : ''}`} onClick={(e) => isDisabled && e.preventDefault()}>
               Favourites
             </Link>
-            <Link to="" className="block px-4 py-3 hover:bg-slate-50 text-slate-600">
+            <Link to="/paintings" className="block px-4 py-3 hover:bg-slate-50 text-slate-600">
               Paintings
             </Link>
-            <Link to="" className="block px-4 py-3 hover:bg-slate-50 text-slate-600">
+            <Link to="/genres" className="block px-4 py-3 hover:bg-slate-50 text-slate-600">
               Genres
             </Link>
-            <Link to="" className="block px-4 py-3 hover:bg-slate-50 text-slate-600">
+            <Link to="/about" className="block px-4 py-3 hover:bg-slate-50 text-slate-600">
               About
             </Link>
 
@@ -105,13 +109,13 @@ const SingleGenre = () => {
                 to="/favourites" className={`block px-4 py-3 hover:bg-slate-50 text-slate-600 ${isDisabled ? 'opacity-50 cursor-not-allowed' : ''}`} onClick={(e) => isDisabled && e.preventDefault()}>
                 Favourites
               </Link>
-              <Link to="" className="block px-4 py-3 hover:bg-slate-50 text-slate-600">
+              <Link to="/paintings" className="block px-4 py-3 hover:bg-slate-50 text-slate-600">
                 Paintings
               </Link>
-              <Link to="" className="block px-4 py-3 hover:bg-slate-50 text-slate-600">
+              <Link to="/genres" className="block px-4 py-3 hover:bg-slate-50 text-slate-600">
                 Genres
               </Link>
-              <Link to="" className="block px-4 py-3 hover:bg-slate-50 text-slate-600">
+              <Link to="/about" className="block px-4 py-3 hover:bg-slate-50 text-slate-600">
                 About
               </Link>
             </div>
@@ -129,12 +133,9 @@ const SingleGenre = () => {
                 <p>
                   <span className="font-semibold">🎨</span> {data.genreName}
                 </p>
-                <Link
-                  to={data.artistLink}
-                  target="_blank"
+                <Link to={data.artistLink} target="_blank"
                   rel="noopener noreferrer"
-                  className="text-blue-600 hover:underline"
-                >
+                  className="text-blue-600 hover:underline">
                   🌐 Wikipedia
                 </Link>
                 <p className="">
@@ -144,8 +145,7 @@ const SingleGenre = () => {
               <div className="relative">
                 <button
                   className={`flex hover:cursor-pointer gap-1 items-center ${isFavourite ? 'bg-red-100 hover:bg-red-200' : 'bg-gray-100 hover:bg-gray-200'} px-4 py-2 rounded-lg`}
-                  onClick={() => addtoFavourites(genreId)}
-                >
+                  onClick={() => addtoFavourites(genreId)}>
                   <img className="max-w-5 max-h-5" src={notfavourite} alt={isFavourite ? "Favorited" : "Add to Favorites"} />
                   <span>{isFavourite ? 'Favourited' : 'Favourite'}</span>
                 </button>
@@ -159,8 +159,7 @@ const SingleGenre = () => {
               <div className="relative">
                 <button
                   onClick={() => setIsSortDropdownOpen(!isSortDropdownOpen)}
-                  className="flex items-center bg-gray-100 hover:bg-gray-200 px-4 py-2 rounded-lg"
-                >
+                  className="flex items-center bg-gray-100 hover:bg-gray-200 px-4 py-2 rounded-lg">
                   Sort by: {sortOption === "title" ? "Painting Title" : "Year"}  {/* https://tailwindcss.com/plus/ui-blocks/application-ui/elements/dropdowns */}
                   <svg className="-mr-1 size-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                     <path fillRule="evenodd" d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z" clipRule="evenodd" />
@@ -174,8 +173,7 @@ const SingleGenre = () => {
                           setSortOption("title");
                           setIsSortDropdownOpen(false);
                         }}
-                        className="block w-full text-left px-4 py-2 hover:bg-gray-100"
-                      >
+                        className="block w-full text-left px-4 py-2 hover:bg-gray-100">
                         Painting Title
                       </button>
                       <button
@@ -183,8 +181,7 @@ const SingleGenre = () => {
                           setSortOption("year");
                           setIsSortDropdownOpen(false);
                         }}
-                        className="block w-full text-left px-4 py-2 hover:bg-gray-100"
-                      >
+                        className="block w-full text-left px-4 py-2 hover:bg-gray-100">
                         Year
                       </button>
                       <button
@@ -192,8 +189,7 @@ const SingleGenre = () => {
                           setSortOption("artistName");
                           setIsSortDropdownOpen(false);
                         }}
-                        className="block w-full text-left px-4 py-2 hover:bg-gray-100"
-                      >
+                        className="block w-full text-left px-4 py-2 hover:bg-gray-100">
                         Artist Name
                       </button>
                     </div>

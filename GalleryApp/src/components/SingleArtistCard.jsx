@@ -58,9 +58,7 @@ const SingleArtistCard = ({ id, sortOption }) => {
                 key={index}>
                 <div className="p-0.5 border-2 text-center b-0 flex flex-col gap-10 bg-gradient-to-b from-stone-100 to-white min-h-full">
                     <p className="relative group hover:cursor-pointer" onClick={() => handlePaintingClick(item)}>
-                        <img
-                            className="w-full transition-transform duration-300 ease-in-out transform group-hover:opacity-90"
-                            src={imageUrl}
+                        <img className="w-full transition-transform duration-300 ease-in-out transform group-hover:opacity-90" src={imageUrl}
                             alt={item.title} />
                     </p>
                     <p onClick={() => handlePaintingClick(item)}
@@ -75,13 +73,17 @@ const SingleArtistCard = ({ id, sortOption }) => {
         );
     };
 
-    if (loading) {
-        return <div className="text-center py-8">Loading paintings...</div>;
-    }
+    if (loading) {    
+        return (
+          <div className="flex flex-col items-center justify-center min-h-screen mt-16">
+            <div className="text-center mb-4">
+              <div className="inline-block h-8 w-8 border-4 border-red-600 border-t-transparent rounded-full animate-spin"></div>
+            </div>
+            <p className="text-lg text-gray-700">Loading...</p>
+          </div>
+        );
+      }
 
-    // if (error) {
-    //     return <div className="text-center py-8 text-red-500">{error}</div>;
-    // }
 
     let sortedPaintings = [...paintingInfo];
 
@@ -101,12 +103,8 @@ const SingleArtistCard = ({ id, sortOption }) => {
             {sortedPaintings.map((item, index) => divElement(item, index))}
 
             {isModalOpen && selectedPainting && (
-                <PaintingModal
-                    imageLink={`https://res.cloudinary.com/funwebdev/image/upload/w_150/art/paintings/square/${checkPaintId(selectedPainting.imageFileName)}.jpg`}
-                    painting={selectedPainting}
-                    isOpen={closeModal}
-                    
-                />
+                <PaintingModal imageLink={`https://res.cloudinary.com/funwebdev/image/upload/w_150/art/paintings/square/${checkPaintId(selectedPainting.imageFileName)}.jpg`} painting={selectedPainting}
+                    isOpen={closeModal}/>
             )}
         </>
     );

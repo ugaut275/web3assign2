@@ -15,6 +15,7 @@ const SingleArtists = () => {
     const [isDisabled, setIsDisabled] = useState(false);
     const myRef = useRef(null);
 
+    // check to see if favourite artits exist in local storage if not disable button to favourites page 
     useEffect(() => {
         if (favouriteArtists.includes(artistId)) {
             setFav(true);
@@ -23,7 +24,7 @@ const SingleArtists = () => {
         }
     }, [artistId, favouriteArtists]);
 
-    const addtoFavourites = (artistId) => {
+    const addtoFavourites = (artistId) => {    
         if (favouriteArtists.includes(artistId)) {
             const updatedFavourites = favouriteArtists.filter(id => id !== artistId);
             localStorage.setItem("favouriteArtists", JSON.stringify(updatedFavourites));
@@ -76,22 +77,22 @@ const SingleArtists = () => {
             <div className="flex flex-row w-full">
                 <div className="sm:bg-gradient-to-br from-white via-stone-100 to-stone-300 min-h-screen mt-10">
                     <div className="hidden sm:flex w-20 bg-white/50 backdrop-blur-sm w-full flex-col items-center py-8 space-y-6">
-                        <Link to="/ArtistView" className="p-3 rounded-xl hover:bg-stone-200/50 transition-colors group bg-stone-200/50">
+                        <Link to="/ArtistView" className="p-3 rounded-xl hover:bg-stone-200/50 transition-colors group bg-stone-200">
                             Artists
                         </Link>
-                        <Link to="/gallery" className="p-3 rounded-xl hover:bg-stone-200/50 transition-colors group">
+                        <Link to="/gallery" className="p-3 rounded-xl hover:bg-stone-200 transition-colors">
                             Gallery
                         </Link>
                         <Link ref={myRef} to="/favourites" className={`p-3 rounded-xl hover:bg-stone-200/50 transition-colors group ${isDisabled ? 'opacity-50 cursor-not-allowed' : ''}`} onClick={(e) => isDisabled && e.preventDefault()}>
                             Favourites
                         </Link>
-                        <Link to="" className="block px-4 py-3 hover:bg-slate-50 text-slate-600">
+                        <Link to="/paintings" className="p-3 rounded-xl hover:bg-stone-200 transition-colors">
                             Paintings
                         </Link>
-                        <Link to="" className="block px-4 py-3 hover:bg-slate-50 text-slate-600">
+                        <Link to="/genres" className="p-3 rounded-xl hover:bg-stone-200 transition-colors">
                             Genres
                         </Link>
-                        <Link to="" className="block px-4 py-3 hover:bg-slate-50 text-slate-600">
+                        <Link to="/about" className="p-3 rounded-xl hover:bg-stone-200 transition-colors">
                             About
                         </Link>
 
@@ -105,24 +106,24 @@ const SingleArtists = () => {
                         </button>
                     </div>
                     {isDropdownOpen && (
-                        <div className="absolute rounded-lg mt-2 w-full z-10 bg-white shadow-lg border border-slate-100 overflow-hidden">
-                            <Link to="/ArtistView" className="block px-4 py-3 bg-slate-100 text-slate-800 font-medium">
+                        <div className="absolute rounded-lg mt-2 w-full z-10 bg-white shadow-lg border border-stone-100 overflow-hidden">
+                            <Link to="/ArtistView" className="block px-4 py-3 bg-stone-100 text-slate-800 font-medium">
                                 Artists
                             </Link>
-                            <Link to="/gallery" className="block px-4 py-3 hover:bg-slate-50 text-slate-600">
+                            <Link to="/gallery" className="block px-4 py-3 hover:bg-stone-50 text-stone-600">
                                 Gallery
                             </Link>
                             <Link ref={myRef}
-                                to="/favourites" className={`block px-4 py-3 hover:bg-slate-50 text-slate-600 ${isDisabled ? 'opacity-50 cursor-not-allowed' : ''}`} onClick={(e) => isDisabled && e.preventDefault()}>
+                                to="/favourites" className={`block px-4 py-3 hover:bg-stone-50 text-slate-600 ${isDisabled ? 'opacity-50 cursor-not-allowed' : ''}`} onClick={(e) => isDisabled && e.preventDefault()}>
                                 Favourites
                             </Link>
-                            <Link to="" className="block px-4 py-3 hover:bg-slate-50 text-slate-600">
+                            <Link to="/paintings" className="block px-4 py-3 hover:bg-stone-50 text-stone-600">
                                 Paintings
                             </Link>
-                            <Link to="" className="block px-4 py-3 hover:bg-slate-50 text-slate-600">
+                            <Link to="/genres" className="block px-4 py-3 hover:bg-stone-50 text-stone-600">
                                 Genres
                             </Link>
-                            <Link to="" className="block px-4 py-3 hover:bg-slate-50 text-slate-600">
+                            <Link to="/about" className="block px-4 py-3 hover:bg-stone-50 text-stone-600">
                                 About
                             </Link>
                         </div>
@@ -147,12 +148,8 @@ const SingleArtists = () => {
                                 <p>
                                     <span className="font-semibold">︎🚻</span> {data.gender === "M" ? "Male" : "Female" }
                                 </p>
-                                <Link
-                                    to={data.artistLink}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="text-blue-600 hover:underline"
-                                >
+                                <Link to={data.artistLink} target="_blank" rel="noopener noreferrer"
+                                    className="text-blue-600 hover:underline">
                                     🌐 Wikipedia
                                 </Link>
                                 <p className="">
@@ -162,8 +159,7 @@ const SingleArtists = () => {
                             <div className="relative">
                                 <button
                                     className={`flex hover:cursor-pointer gap-1 items-center ${isFavourite ? 'bg-red-100 hover:bg-red-200' : 'bg-gray-100 hover:bg-gray-200'} px-4 py-2 rounded-lg`}
-                                    onClick={() => addtoFavourites(artistId)}
-                                >
+                                    onClick={() => addtoFavourites(artistId)}>
                                     <img className="max-w-5 max-h-5" src={notfavourite} alt={isFavourite ? "Favorited" : "Add to Favorites"} />
                                     <span>{isFavourite ? 'Favourited' : 'Favourite'}</span>
                                 </button>
@@ -171,7 +167,7 @@ const SingleArtists = () => {
                         </div>
 
                         <div className=" w-100 h-64 bg-gray-200  mb-6  flex items-center self-center justify-center">
-                            <p className="text-gray-500">Artist Image will be displayed here</p>
+                            <p className="text-gray-500">Dont have image currently</p>
                         </div>
 
                         <div className="mb-6">
@@ -183,9 +179,8 @@ const SingleArtists = () => {
                             <div className="relative">
                                 <button
                                     onClick={() => setIsSortDropdownOpen(!isSortDropdownOpen)}
-                                    className="flex items-center bg-gray-100 hover:bg-gray-200 px-4 py-2 rounded-lg"
-                                >
-                                    Sort by: {sortOption === "title" ? "Painting Title" : "Year"}  {/* https://tailwindcss.com/plus/ui-blocks/application-ui/elements/dropdowns */}
+                                    className="flex items-center bg-gray-100 hover:bg-gray-200 px-4 py-2 rounded-lg">
+                                    Sort by: {sortOption === "title" ? "Painting Title" : "Year"}  {/* https://tailwindcss.com/plus/ui-blocks/application-ui/elements/dropdowns   When sort option changes causes a re-render which then calls a new iteration of the single artist card with sorted data */}
                                     <svg className="-mr-1 size-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                                         <path fillRule="evenodd" d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z" clipRule="evenodd" />  
                                     </svg>
@@ -198,8 +193,7 @@ const SingleArtists = () => {
                                                     setSortOption("title");
                                                     setIsSortDropdownOpen(false);
                                                 }}
-                                                className="block w-full text-left px-4 py-2 hover:bg-gray-100"
-                                            >
+                                                className="block w-full text-left px-4 py-2 hover:bg-gray-100">
                                                 Painting Title
                                             </button>
                                             <button
@@ -207,8 +201,7 @@ const SingleArtists = () => {
                                                     setSortOption("year");
                                                     setIsSortDropdownOpen(false);
                                                 }}
-                                                className="block w-full text-left px-4 py-2 hover:bg-gray-100"
-                                            >
+                                                className="block w-full text-left px-4 py-2 hover:bg-gray-100">
                                                 Year
                                             </button>
                                         </div>
@@ -218,7 +211,7 @@ const SingleArtists = () => {
                         </div>
                     </div>
                     <div className="flex flex-row gap-4 flex-wrap ml-10 sm:ml-45">
-                        <SingleArtistCard id={artistId} sortOption={sortOption} />
+                        <SingleArtistCard id={artistId} sortOption={sortOption} /> {/* passing state to and id to render page */}
                     </div>
                 </div>
             </div>

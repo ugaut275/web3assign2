@@ -2,7 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import PaintingModal from '../components/PaintingModal';
 
+
+//https://horizon-ui.com/docs-tailwind/docs/react/select  for the filters 
+
 const PaintingView = () => {
+
+
   const [paintings, setPaintings] = useState([]);
   const [filteredPaintings, setFilteredPaintings] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -19,7 +24,10 @@ const PaintingView = () => {
   const [selectedGallery, setSelectedGallery] = useState("");
   const [selectedGenre, setSelectedGenre] = useState("");
 
-  useEffect(() => {
+
+
+
+  useEffect(() => {   // fetching all types of data at once
     const fetchData = async () => {
       try {
         // Fetch paintings
@@ -77,7 +85,7 @@ const PaintingView = () => {
     try {
       let result = [...paintings];
 
-      if (selectedGenre) {
+      if (selectedGenre) {    // since painting endpoint doesnt contain genre we are getting all painting from selected genre and then filtering the loaded painting array for the Id
         const genreResponse = await fetch(`http://35.193.45.17:8080/api/paintings/genre/ref/${selectedGenre}`);
         const genrePaintings = await genreResponse.json();
         const genrePaintingIds = genrePaintings.map(p => p.paintingId);
@@ -88,7 +96,7 @@ const PaintingView = () => {
         result = paintings.filter(painting => 
           painting.artists?.artistId === parseInt(selectedArtist)
         );
-      }
+      }      // applying other filters is quite easy 
       else if (selectedGallery) {
         result = paintings.filter(painting => 
           painting.galleries?.galleryId === parseInt(selectedGallery)
@@ -108,7 +116,7 @@ const PaintingView = () => {
     setSelectedGenre("");
     setFilteredPaintings(paintings);
   };
-
+// if artist filter selected
   const handleArtistChange = (e) => {
     setSelectedArtist(e.target.value);
     setSelectedGallery("");
@@ -126,7 +134,7 @@ const PaintingView = () => {
     setSelectedArtist("");
     setSelectedGallery("");
   };
-
+    // recyvled from other pages
   const checkPaintId = (paintingId) => {
     const idStr = String(paintingId);
     if (idStr.length === 7) {
@@ -144,8 +152,8 @@ const PaintingView = () => {
     setIsModalOpen(true);
   };
 
-  if (loading) {
-    return (
+  if (loading) {       
+    return (     // 
       <div className="flex flex-col items-center justify-center min-h-64 mt-16">
         <div className="text-center mb-4">
           <div className="inline-block h-8 w-8 border-4 border-red-600 border-t-transparent rounded-full animate-spin"></div>
@@ -155,20 +163,18 @@ const PaintingView = () => {
     );
   }
 
-  if (error) {
+  if (error) {   // https://tw-elements.com/docs/standard/components/spinners/
     return (
       <div className="flex flex-col items-center justify-center min-h-64 mt-16">
         <p className="text-lg text-red-600">{error}</p>
-        <button
-          onClick={() => window.location.reload()}
-          className="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-        >
+        <button onClick={() => window.location.reload()}
+          className="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700" >
           Retry
         </button>
       </div>
     );
   }
-
+  // manage sort options
   let sortedPaintings = [...filteredPaintings];
   switch (sortOption) {
     case "title":
@@ -199,12 +205,10 @@ const PaintingView = () => {
           </Link>
         </div>
 
-        {/* Mobile Navigation */}
+        {/* Mobile Navigation  */}
         <div className="sm:hidden relative">
-          <button
-            onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-            className="p-3 rounded-xl bg-stone-200/50 hover:bg-stone-300 transition-colors w-full text-left"
-          >
+          <button onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+            className="p-3 rounded-xl bg-stone-200/50 hover:bg-stone-300 transition-colors w-full text-left" >
             ≡
           </button>
           {isDropdownOpen && (
@@ -229,24 +233,21 @@ const PaintingView = () => {
             Paintings Collection
           </h1>
 
-          {/* Filter Section */}
+          {/* Filter Section */}    
           <div className="mb-8">
-
+ 
             <div className="bg-white shadow-md rounded-lg p-6 mb-6">
               <h3 className="text-lg font-semibold mb-4">Filter Paintings</h3>
               <div className="grid md:grid-cols-3 gap-6">
                 {/* Artist Filter */}
-                <div className={selectedGallery || selectedGenre ? 'opacity-50 pointer-events-none' : ''}>
+                <div className={selectedGallery || selectedGenre ? 'opacity-50 pointer-events-none' : ''}>  {/* Blur it out when either of the other two filters are selected*/ }
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Artist
                   </label>
-                  <select
-                    value={selectedArtist}
-                    onChange={handleArtistChange}
+                  <select value={selectedArtist} onChange={handleArtistChange}
                     className={`w-full p-2 border rounded-md focus:ring-blue-500 focus:border-blue-500 
                       ${selectedArtist ? 'border-blue-500 bg-blue-50' : 'border-gray-300'}`}
-                    disabled={selectedGallery || selectedGenre}
-                  >
+                    disabled={selectedGallery || selectedGenre} >
                     <option value="">All Artists</option>
                     {artists.map(artist => (
                       <option key={artist.id} value={artist.id}>{artist.name}</option>
@@ -259,13 +260,9 @@ const PaintingView = () => {
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Gallery
                   </label>
-                  <select
-                    value={selectedGallery}
-                    onChange={handleGalleryChange}
-                    className={`w-full p-2 border rounded-md focus:ring-blue-500 focus:border-blue-500 
-                      ${selectedGallery ? 'border-blue-500 bg-blue-50' : 'border-gray-300'}`}
-                    disabled={selectedArtist || selectedGenre}
-                  >
+                  <select value={selectedGallery} onChange={handleGalleryChange}
+                    className={`w-full p-2 border rounded-md focus:ring-blue-500 focus:border-blue-500 ${selectedGallery ? 'border-blue-500 bg-blue-50' : 'border-gray-300'}`}
+                    disabled={selectedArtist || selectedGenre}>
                     <option value="">All Galleries</option>
                     {galleries.map(gallery => (
                       <option key={gallery.id} value={gallery.id}>{gallery.name}</option>
@@ -278,13 +275,8 @@ const PaintingView = () => {
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Genre
                   </label>
-                  <select
-                    value={selectedGenre}
-                    onChange={handleGenreChange}
-                    className={`w-full p-2 border rounded-md focus:ring-blue-500 focus:border-blue-500 
-                      ${selectedGenre ? 'border-blue-500 bg-blue-50' : 'border-gray-300'}`}
-                    disabled={selectedArtist || selectedGallery}
-                  >
+                  <select value={selectedGenre} onChange={handleGenreChange}
+                    className={`w-full p-2 border rounded-md focus:ring-blue-500 focus:border-blue-500   ${selectedGenre ? 'border-blue-500 bg-blue-50' : 'border-gray-300'}`} disabled={selectedArtist || selectedGallery}>
                     <option value="">All Genres</option>
                     {genres.map(genre => (
                       <option key={genre.id} value={genre.id}>{genre.name}</option>
@@ -299,10 +291,8 @@ const PaintingView = () => {
                   {selectedGallery && <span>Filtering by Gallery</span>}
                   {selectedGenre && <span>Filtering by Genre</span>}
                 </div>
-                <button
-                  onClick={clearFilters}
-                  className="px-4 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300 transition-colors"
-                >
+                <button onClick={clearFilters}
+                  className="px-4 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300 transition-colors">
                   Clear Filters
                 </button>
               </div>
@@ -315,11 +305,9 @@ const PaintingView = () => {
               {filteredPaintings.length} {filteredPaintings.length === 1 ? 'Painting' : 'Paintings'}
               {(selectedArtist || selectedGallery || selectedGenre) ? ' (Filtered)' : ''}
             </h2>
-            <div className="relative">
-              <button
-                onClick={() => setIsSortDropdownOpen(!isSortDropdownOpen)}
-                className="flex items-center bg-gray-100 hover:bg-gray-200 px-4 py-2 rounded-lg"
-              >
+            <div className="relative">                             {/* This is recycled  components from my other pages. sourced provided in gallery page */}
+              <button onClick={() => setIsSortDropdownOpen(!isSortDropdownOpen)}
+                className="flex items-center bg-gray-100 hover:bg-gray-200 px-4 py-2 rounded-lg" >
                 Sort by: {sortOption === "title" ? "Title" : "Year"}
                 <svg className="-mr-1 size-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
                   <path fillRule="evenodd" d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z" clipRule="evenodd" />
@@ -333,8 +321,7 @@ const PaintingView = () => {
                         setSortOption("title");
                         setIsSortDropdownOpen(false);
                       }}
-                      className="block w-full text-left px-4 py-2 hover:bg-gray-100"
-                    >
+                      className="block w-full text-left px-4 py-2 hover:bg-gray-100" >
                       Title
                     </button>
                     <button
@@ -342,8 +329,7 @@ const PaintingView = () => {
                         setSortOption("year");
                         setIsSortDropdownOpen(false);
                       }}
-                      className="block w-full text-left px-4 py-2 hover:bg-gray-100"
-                    >
+                      className="block w-full text-left px-4 py-2 hover:bg-gray-100" >
                       Year
                     </button>
                   </div>
@@ -351,14 +337,12 @@ const PaintingView = () => {
               )}
             </div>
           </div>
-
+                 {/* This is recycled  components from my other pages. sourced provided in gallery page */}
           {sortedPaintings.length === 0 ? (
             <div className="text-center py-10">
               <p className="text-lg text-gray-600">No paintings match your filter criteria.</p>
-              <button
-                onClick={clearFilters}
-                className="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-              >
+              <button onClick={clearFilters}
+                className="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700" >
                 Clear Filters
               </button>
             </div>

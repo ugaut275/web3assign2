@@ -12,10 +12,10 @@ const SingleGenreCard = ({ id, sortOption }) => {
     const getPaintingInfo = async () => {
       setLoading(true);
       try {
+        /* since genre endpoints doenst return image with the imageFileName i needed to first get the imageId and then run another API for the painting 
+        to get the imageFileName component  i had the 2 endpoints built but i didnt know how i was supposed to merge them together so i asked AI to save time*/
         const response = await fetch(`http://34.172.61.40:8080/api/paintings/genre/ref/${id}`);
-        if (!response.ok) {
-          throw new Error(`Error fetching paintings: ${response.status}`);
-        }
+  
         const data = await response.json();
 
         const detailedPaintings = await Promise.all(
@@ -23,7 +23,7 @@ const SingleGenreCard = ({ id, sortOption }) => {
             try {
               const paintingResponse = await fetch(`http://34.172.61.40:8080/api/paintings/ref/${painting.paintingId}`);
               const paintingDetails = await paintingResponse.json();
-              return { ...painting, ...paintingDetails };  //used some AI help for this line
+              return { ...painting, ...paintingDetails };  //used some AI help for this line... 
             } catch (error) {
               console.error(`Failed to fetch details for painting ID ${painting.paintingId}:`, error);
               return painting;
@@ -44,7 +44,7 @@ const SingleGenreCard = ({ id, sortOption }) => {
     getPaintingInfo();
   }, [id]);
 
-  const checkPaintId = (paintingId) => {
+  const checkPaintId = (paintingId) => {  // since imageFileName has to be 6 letters for the cloudinary url to work and not all imageFileName are 6 letter we either have to add some leading 0s or remove them 
     const idStr = String(paintingId);
     if (idStr.length === 7) {
       return idStr.substring(0, 6);
@@ -124,14 +124,10 @@ const SingleGenreCard = ({ id, sortOption }) => {
     <>
       {sortedPaintings.map((item, index) => divElement(item, index))}
 
-      {isModalOpen && selectedPainting && (
-        <PaintingModal
-          imageLink={`https://res.cloudinary.com/funwebdev/image/upload/w_150/art/paintings/square/${checkPaintId(
-            selectedPainting.imageFileName
-          )}.jpg`}
+      {isModalOpen && selectedPainting && (   // calling the modal
+        <PaintingModal imageLink={`https://res.cloudinary.com/funwebdev/image/upload/w_150/art/paintings/square/${checkPaintId(selectedPainting.imageFileName)}.jpg`}
           painting={selectedPainting}
-          isOpen={closeModal}
-        />
+          isOpen={closeModal}/>
       )}
     </>
   );

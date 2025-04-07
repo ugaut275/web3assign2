@@ -1,7 +1,7 @@
-"use client"
-
 import { useRef, useEffect, useState } from "react"
 import { Link } from "react-router-dom"
+
+// Recycled page from the GalleryView.... Logic is entirely the same
 
 const ArtistView = () => {
     const [myArtists, setMyArtists] = useState([])
@@ -72,19 +72,14 @@ const ArtistView = () => {
                         Favourite Artits
                     </Link>
                     <Link
-                        to=""
+                        to="/paintings"
                         className="mx-4 px-4 py-3 rounded-lg text-slate-600 hover:bg-slate-100 hover:text-slate-800 transition-colors">
                         Paintings
                     </Link>
                     <Link
-                        to=""
+                        to="/genres"
                         className="mx-4 px-4 py-3 rounded-lg text-slate-600 hover:bg-slate-100 hover:text-slate-800 transition-colors">
                         Genres
-                    </Link>
-                    <Link
-                        to=""
-                        className="mx-4 px-4 py-3 rounded-lg text-slate-600 hover:bg-slate-100 hover:text-slate-800 transition-colors">
-                        About
                     </Link>
                 </div>
                 <div className="sm:hidden relative">
@@ -106,14 +101,11 @@ const ArtistView = () => {
                                 to="/favourites" className={`block px-4 py-3 hover:bg-stone-50 text-slate-600 ${isDisabled?'opacity-50 cursor-not-allowed' : '' }`} onClick={(e) => isDisabled && e.preventDefault()}>
                                 Favourites
                             </Link>
-                            <Link to="" className="block px-4 py-3 hover:bg-stone-50 text-stone-600">
+                            <Link to="/paintings" className="block px-4 py-3 hover:bg-stone-50 text-stone-600">
                                 Paintings
                             </Link>
-                            <Link to="" className="block px-4 py-3 hover:bg-stone-100 text-stone-600">
+                            <Link to="/genres" className="block px-4 py-3 hover:bg-stone-100 text-stone-600">
                                 Genres
-                            </Link>
-                            <Link to="" className="block px-4 py-3 hover:bg-stone-50 text-stone-600">
-                                About
                             </Link>
                         </div>
                     )}

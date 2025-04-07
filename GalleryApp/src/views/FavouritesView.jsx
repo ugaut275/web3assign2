@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { useEffect, useState } from "react"
 import { Link } from "react-router-dom"
 import PaintingModal from "../components/PaintingModal"
@@ -7,7 +8,6 @@ const FavouritesView = () => {
   const [favouritePaintings, setFavouritePaintings] = useState([])
   const [favouriteGenres, setFavouriteGenres] = useState([])
   const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
   const [filterOption, setFilterOption] = useState("galleries")
 
@@ -97,7 +97,6 @@ const FavouritesView = () => {
 
       } catch (error) {
         console.error("Error fetching favourites:", error)
-        setError("Failed to load favorites")
       } finally {
         setLoading(false)
       }
@@ -291,7 +290,7 @@ const FavouritesView = () => {
   }
 
   if (loading) {
-    return (
+    return (     
       <div className="flex flex-col items-center justify-center min-h-64 mt-16">
         <div className="text-center mb-4">
           <div className="inline-block h-8 w-8 border-4 border-red-600 border-t-transparent rounded-full animate-spin"></div>
@@ -356,10 +355,10 @@ const FavouritesView = () => {
           <div className="flex justify-between items-center mb-6">
             <h1 className="text-2xl font-bold text-gray-800">Favourites</h1>
             <p className="text-gray-500">
-              {filterOption === 'galleries' && `${favouriteGalleries.length} ${favouriteGalleries.length === 1 ? "gallery" : "galleries"}`}
-              {filterOption === 'artists' && `${favouriteArtists.length} ${favouriteArtists.length === 1 ? "artist" : "artists"}`}
-              {filterOption === 'paintings' && `${favouritePaintings.length} ${favouritePaintings.length === 1 ? "painting" : "paintings"}`}
-              {filterOption === 'genres' && `${favouriteGenres.length} ${favouriteGenres.length === 1 ? "genre" : "genres"}`}
+              {filterOption === 'galleries' && `${favouriteGalleries.length}`}
+              {filterOption === 'artists' && `${favouriteArtists.length}`}
+              {filterOption === 'paintings' && `${favouritePaintings.length} `}
+              {filterOption === 'genres' && `${favouriteGenres.length} `}
             </p>
           </div>
 

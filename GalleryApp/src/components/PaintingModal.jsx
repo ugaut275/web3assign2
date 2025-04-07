@@ -56,11 +56,7 @@ const PaintingModal = ({ imageLink, painting, isOpen,}) => {
         <div className="p-6 overflow-y-auto">
           <div className="flex flex-col gap-8">
             <div className="flex flex-col">
-              <img
-                src={imageLink}
-                alt={painting.title}
-                className="w-full object-contain rounded-3xl border border-yellow-400 shadow-md"/>
-
+              <img src={imageLink} alt={painting.title} className="w-full object-contain rounded-3xl border border-yellow-400 shadow-md"/>
               <div className="mt-4 flex justify-between items-center">
                 <div className="flex items-center gap-2">
                   <div className="h-8 w-1 bg-purple-500 rounded-full"></div>
@@ -69,16 +65,10 @@ const PaintingModal = ({ imageLink, painting, isOpen,}) => {
                   </h4>
                 </div>
 
-                <button
-                  className={`flex hover:cursor-pointer gap-1 items-center ${
-                    isFavourite ? "bg-pink-600 hover:bg-pink-700" : "bg-gray-800 hover:bg-gray-700"
-                  } px-3 py-1.5 rounded-full text-white text-sm transition-colors duration-200`}
+                <button className={`flex hover:cursor-pointer gap-1 items-center ${isFavourite ? "bg-pink-600 hover:bg-pink-700" : "bg-gray-800 hover:bg-gray-700"} px-3 py-1.5 rounded-full text-white text-sm transition-colors duration-200`}
                   onClick={() => addtoFavourites(painting.paintingId)}>
-                  <img
-                    className="max-w-4 max-h-4"
-                    src={notfavourite || "/placeholder.svg"}
-                    alt={isFavourite ? "Favorited" : "Add to Favorites"}
-                  />
+                  <img className="max-w-4 max-h-4" src={notfavourite}
+                    alt={isFavourite ? "Favorited" : "Add to Favorites"}/>
                   <span>{isFavourite ? "Favourited" : "Favourite"}</span>
                 </button>
               </div>
@@ -129,8 +119,7 @@ const PaintingModal = ({ imageLink, painting, isOpen,}) => {
               {/* External Links */}
               <div className="flex flex-wrap gap-2 pt-2">
                 {painting.museumLink && (
-                  <a
-                    href={painting.museumLink}
+                  <a href={painting.museumLink}
                     className="bg-gray-800 hover:bg-gray-700 text-white px-4 py-2 rounded-full text-sm transition-colors duration-200 flex items-center gap-2">
                     <span className="w-2 h-2 bg-blue-400 rounded-full"></span>
                     Museum Link
@@ -138,20 +127,16 @@ const PaintingModal = ({ imageLink, painting, isOpen,}) => {
                 )}
 
                 {painting.wikiLink && painting.wikiLink.length > 0 && (
-                  <a
-                    href={painting.wikiLink}
-                    className="bg-gray-800 hover:bg-gray-700 text-white px-4 py-2 rounded-full text-sm transition-colors duration-200 flex items-center gap-2"
-                  >
+                  <a href={painting.wikiLink}
+                    className="bg-gray-800 hover:bg-gray-700 text-white px-4 py-2 rounded-full text-sm transition-colors duration-200 flex items-center gap-2">
                     <span className="w-2 h-2 bg-green-400 rounded-full"></span>
                     Wiki Link
                   </a>
                 )}
 
                 {painting.googleLink && (
-                  <a
-                    href={painting.googleLink}
-                    className="bg-gray-800 hover:bg-gray-700 text-white px-4 py-2 rounded-full text-sm transition-colors duration-200 flex items-center gap-2"
-                  >
+                  <a href={painting.googleLink}
+                    className="bg-gray-800 hover:bg-gray-700 text-white px-4 py-2 rounded-full text-sm transition-colors duration-200 flex items-center gap-2">
                     <span className="w-2 h-2 bg-purple-400 rounded-full"></span>
                     Google Arts
                   </a>

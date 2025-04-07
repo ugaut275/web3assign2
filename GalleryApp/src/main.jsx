@@ -12,6 +12,7 @@ import SingleArtists from './components/SingleArtists.jsx';
 import GenreView from './views/GenreView.jsx';
 import SingleGenre from './components/SingleGenre.jsx';
 import PaintingView from './views/PaintingView.jsx'
+import About from './views/About.jsx'
 const router = createBrowserRouter([
   {path: '/', element: <App />},
   {path: '/gallery', element: <GalleryView />},
@@ -20,6 +21,7 @@ const router = createBrowserRouter([
   {path: '/favourites', element: <FavouritesView/>},
   {path: '/GenreDetails/:genreId', element: <SingleGenre />}, 
   {path: '/genres', element: <GenreView/>},
+  {path: '/about', element: <About/>},
   {path: '/paintings', element: <PaintingView/>},
   {path: '/ArtistDetails/:artistId', element: <SingleArtists />}, 
   {path: '*', element: <h1><NotFound/></h1>},

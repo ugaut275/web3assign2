@@ -3,12 +3,13 @@ import PaintingModal from "./PaintingModal";
 
 // Layout design same from GalleryItem.jsx with minor tweaks in the design
 
+// Recieves an Id value from singlegallery and then run query to get all painting associated with the gallery and also revieves a state variable which sorts the paintings depending on the values 
+
 const SingleGalleryCard = ({ id, sortOption }) => {
     const [paintingInfo, setPaintingInfo] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedPainting, setSelectedPainting] = useState(null);
     const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
 
     useEffect(() => {
         const getPaintingInfo = async () => {
@@ -20,10 +21,8 @@ const SingleGalleryCard = ({ id, sortOption }) => {
                 }
                 const data = await response.json();
                 setPaintingInfo(data);
-                setError(null);
             } catch (error) {
                 console.error("Failed to fetch paintings:", error);
-                setError("Failed to load paintings. Please try again later.");
             } finally {
                 setLoading(false);
             }
@@ -32,7 +31,7 @@ const SingleGalleryCard = ({ id, sortOption }) => {
         getPaintingInfo();
     }, [id]);
 
-    const checkPaintId = (paintingId) => {
+    const checkPaintId = (paintingId) => {  // since imageID for the cloudinary link needs to be 6 digits we either add or remove trailing zeroes over here
         const idStr = String(paintingId);
 
         if (idStr.length === 7) {
@@ -80,13 +79,11 @@ const SingleGalleryCard = ({ id, sortOption }) => {
         return <div className="text-center py-8">Loading paintings...</div>;
     }
 
-    if (error) {
-        return <div className="text-center py-8 text-red-500">{error}</div>;
-    }
+
 
     let sortedPaintings = [...paintingInfo];
 
-    switch (sortOption) {
+    switch (sortOption) {   // sort the painting based on the value recieved
         case "title":
             sortedPaintings.sort((a, b) => a.title.localeCompare(b.title));
             break;
@@ -102,11 +99,10 @@ const SingleGalleryCard = ({ id, sortOption }) => {
 
     return (
         <>
-            {sortedPaintings.map((item, index) => divElement(item, index))}
+            {sortedPaintings.map((item, index) => divElement(item, index))}   {/* create cards based on sorted array */}
 
             {isModalOpen && selectedPainting && (
-                <PaintingModal
-                    imageLink={`https://res.cloudinary.com/funwebdev/image/upload/w_150/art/paintings/square/${checkPaintId(selectedPainting.imageFileName)}.jpg`}
+                <PaintingModal imageLink={`https://res.cloudinary.com/funwebdev/image/upload/w_150/art/paintings/square/${checkPaintId(selectedPainting.imageFileName)}.jpg`}
                     painting={selectedPainting}
                     isOpen={closeModal} />
             )}
