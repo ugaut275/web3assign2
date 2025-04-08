@@ -15,7 +15,7 @@ const SingleGalleryCard = ({ id, sortOption }) => {
         const getPaintingInfo = async () => {
             setLoading(true);
             try {
-                const response = await fetch(`http://35.193.45.17:8080/api/paintings/galleries/ref/${id}`);
+                const response = await fetch(`https://comp4513assignment1.onrender.com/api/paintings/galleries/${id}`);
                 if (!response.ok) {
                     throw new Error(`Error fetching paintings: ${response.status}`);
                 }

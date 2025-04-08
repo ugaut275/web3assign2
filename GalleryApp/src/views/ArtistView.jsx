@@ -27,7 +27,7 @@ const ArtistView = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await fetch("http://35.193.45.17:8080/api/artists")
+                const response = await fetch("https://comp4513assignment1.onrender.com/api/artists")
                 const data = await response.json()
                 setMyArtists(data)
             } catch (error) {

@@ -8,7 +8,7 @@ const GalleryItem = ({ gallery }) => {
     useEffect(() => {
         const imageRetrieve = async () => {
             try {
-                const data = await fetch(`http://34.172.61.40:8080/api/paintings/galleries/ref/${gallery.galleryId}`);
+                const data = await fetch(`https://comp4513assignment1.onrender.com/api/paintings/galleries/${gallery.galleryId}`);
                 const response = await data.json();
                 if (response && response[0]) {
                     const paintingId = response[0].imageFileName + "";

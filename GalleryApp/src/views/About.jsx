@@ -50,9 +50,6 @@ const About = () => {
                             <h2 className="text-2xl font-semibold text-indigo-600">AI-Assisted/Generated Features</h2>
                             <div className="bg-indigo-50 rounded-2xl p-6">
                                 <ul className="space-y-3 text-gray-700">
-                                <li className="flex bg-black items-center text-red-500 gap-3">
-                                        This page was styled by AI completely to save some time towards the end 
-                                    </li>
                                     <li className="flex items-center gap-3">
                                         <span className="text-indigo-400 text-xl">○</span>
                                         404 page implementation and styling
